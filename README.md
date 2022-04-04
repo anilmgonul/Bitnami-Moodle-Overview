@@ -295,3 +295,66 @@ Asagidaki cevre degiskenleri ayarlanirsa SMTP kullanarak email gonderme Moodle K
 * ``` PHP_MEMORY_LIMIT```: PHP script'leri icin bellek limiti. Default: **256M**
 * ``` PHP_POST_MAX_SIZE```: PHP POST istekleri icin max boyut.
 * ``` PHP_UPLOAD_MAX_FILESIZE```: PHP yuklemeleri icin max dosya boyutu. Default yok.
+
+***Ornekler***
+
+Asagida belirtilen ornek, Gmail hesabi kullanildigi durumdaki SMTP konfigurasyonunu temsil eder.
+
+* ```docker-compose.yml``` dosyasi modifiye edilmeli:
+
+```
+moodle:
+  ...
+  environment:
+    - MOODLE_DATABASE_USER=bn_moodle
+    - MOODLE_DATABASE_NAME=bitnami_moodle
+    - ALLOW_EMPTY_PASSWORD=yes
+    - MOODLE_SMTP_HOST=smtp.gmail.com
+    - MOODLE_SMTP_PORT=587
+    - MOODLE_SMTP_USER=your_email@gmail.com
+    - MOODLE_SMTP_PASSWORD=your_password
+    - MOODLE_SMTP_PROTOCOL=tls
+...
+```
+
+* Manuel calistirma icin:
+
+```
+$ docker run -d --name moodle -p 80:8080 -p 443:8443 \
+  --env MOODLE_DATABASE_USER=bn_moodle \
+  --env MOODLE_DATABASE_NAME=bitnami_moodle \
+  --env MOODLE_SMTP_HOST=smtp.gmail.com \
+  --env MOODLE_SMTP_PORT=587 \
+  --env MOODLE_SMTP_USER=your_email@gmail.com \
+  --env MOODLE_SMTP_PASSWORD=your_password \
+  --env MOODLE_SMTP_PROTOCOL=tls \
+  --network moodle-tier \
+  --volume /path/to/moodle-persistence:/bitnami \
+  bitnami/moodle:latest
+```
+
+Asagida belirtilen bu ornek ise, NGINX load balancer esliginde uretilir:
+
+* ```docker-compose.yml``` dosyasi modifiye edilmeli:
+
+```
+moodle:
+  ...
+  environment:
+    - MOODLE_HOST=example.com
+    - MOODLE_REVERSEPROXY=true
+    - MOODLE_SSLPROXY=true
+...
+```
+
+* Manuel calistirma icin:
+
+```
+$ docker run -d --name moodle -p 80:8080 -p 443:8443 \
+  --env MOODLE_HOST=example.com \
+  --env MOODLE_REVERSEPROXY=true \
+  --env MOODLE_SSLPROXY=true \
+  --network moodle-tier \
+  --volume /path/to/moodle-persistence:/bitnami \
+  bitnami/moodle:latest
+```
