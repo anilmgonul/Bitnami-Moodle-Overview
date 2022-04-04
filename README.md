@@ -283,3 +283,15 @@ Asagidaki cevre degiskenleri ayarlanirsa SMTP kullanarak email gonderme Moodle K
 * ``` MOODLE_SMTP_USER```: SMTP hesabi kullanicisi.
 * ``` MOODLE_SMTP_PASSWORD```: SMTP hesabi sifresi.
 * ``` MOODLE_SMTP_PROTOCOL```: SMTP protokolu.
+
+
+***PHP Konfigurasyonu***
+
+* ``` PHP_ENABLE_OPCACHE```: PHP script'leri icin OPcache'yi devreye sokar, gecerli kilar. Default yok.
+* ``` PHP_EXPOSE_PHP```: PHP versiyonu ile HTTP header'i devreye sokar, gecerli kilar. Default yok.
+* ``` PHP_MAX_EXECUTION_TIME```: PHP script'leri icin max calisma zamani. Default yok.
+* ``` PHP_MAX_INPUT_TIME```: PHP script'leri icin max girdi zamani. Default yok.
+* ``` PHP_MAX_INPUT_VARS```: PHP script'leri icin max girdi degiskenlerinin miktari. Default yok.
+* ``` PHP_MEMORY_LIMIT```: PHP script'leri icin bellek limiti. Default: **256M**
+* ``` PHP_POST_MAX_SIZE```: PHP POST istekleri icin max boyut.
+* ``` PHP_UPLOAD_MAX_FILESIZE```: PHP yuklemeleri icin max dosya boyutu. Default yok.
