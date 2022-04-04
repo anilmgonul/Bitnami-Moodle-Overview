@@ -117,3 +117,126 @@ $ docker run -d --name moodle \
   bitnami/moodle:latest
 ```
 Bu islemler tamamlandiktan sonra uygulamaya erisim ``` http://kendi-ip-adresinden/``` erisilebilir.
+
+### Uygulamanin Surekliligi
+
+Eger konteyneri silersek, butun veriler silinecektir ve daha sonra imajimizi tekrar calistirdigimizda veritabani yeniden baslatilacaktir. Veri kaybini onlemek adina, disk bolumu (volume) eklentisi yapmaliyiz, bu sayede, konteyner silinse dahi sureklilik saglanmis olacaktir.
+
+Surekliligin saglanmasi icin, depolama bolumu icin dosyaya ait yeri ``` /bitnami/moodle``` olarak eklemeliyiz. Eger belirtilmis dosya yeri bos ise, disk ilk calismada sifirlanacaktir. Buna ek olarak, MariaDB veritabani sureklilik icin olusturmamiz gerekiyor.
+[https://github.com/bitnami/bitnami-docker-mariadb#persisting-your-database](https://github.com/bitnami/bitnami-docker-mariadb#persisting-your-database).
+
+Yukaridaki ornekler Docker'in disk bolumunu ***mariadb_data*** ve ***moodle_data*** olarak tanimliyor. Disk bolumu silinmedigi, kaldirilmadigi surece Moodle TM uygulamasi surekliligini koruyacaktir.
+
+Yanlislikla disk bolumunun silinmesini onlemek adina, host dizinini veri disk bolumu olarak monteleyebiliriz.
+
+### Docker Compose ile Host Dizinini Veri Disk Bolumu Olarak Deklare Etmek
+
+Bu durumu saglamak icin ```docker-compose.yml``` dosyasinda kucuk bir degisiklik yapmak gerekiyor:
+
+```
+mariadb:
+  ...
+  volumes:
+-      - 'mariadb_data:/bitnami/mariadb'
++      - /path/to/mariadb-persistence:/bitnami/mariadb
+...
+moodle:
+  ...
+  volumes:
+-      - 'moodle_data:/bitnami/moodle'
++      - /path/to/moodle-persistence:/bitnami/moodle
+...
+-volumes:
+-  mariadb_data:
+-    driver: local
+-  moodle_data:
+-    driver: local
+```
+
+### Docker Komutlari ile Host Dizinini Veri Disk Bolumu Olarak Deklare Etmek  
+
+**Step 1: Network olusturmak**
+
+```
+$ docker network create moodle-network
+```
+
+**Step 2: MariaDB konteynerini host disk bolumu ile olusturmak**
+
+```
+$ docker run -d --name mariadb \
+  --env ALLOW_EMPTY_PASSWORD=yes \
+  --env MARIADB_USER=bn_moodle \
+  --env MARIADB_PASSWORD=bitnami \
+  --env MARIADB_DATABASE=bitnami_moodle \
+  --network moodle-network \
+  --volume /path/to/mariadb-persistence:/bitnami/mariadb \
+  bitnami/mariadb:latest
+```
+
+**Step 3: Moodle konteynerini host disk bolumu ile olusturmak**
+
+```
+$ docker run -d --name moodle \
+  -p 8080:8080 -p 8443:8443 \
+  --env ALLOW_EMPTY_PASSWORD=yes \
+  --env MOODLE_DATABASE_USER=bn_moodle \
+  --env MOODLE_DATABASE_PASSWORD=bitnami \
+  --env MOODLE_DATABASE_NAME=bitnami_moodle \
+  --network moodle-network \
+  --volume /path/to/moodle-persistence:/bitnami/moodle \
+  bitnami/moodle:latest
+```
+
+### Konfigurasyon
+
+#### Cevre Degiskeni
+
+Moodle imajini calistirdiginda, docker-compose dosyasi ile veya ``` docker run``` komutu ile bir veya birden fazla cevre degiskeninin konfigurasyonu ayarlanabilir. Eger yeni bir cevre degiskeni atanacaksa;
+
+* Docker-compose dosyasi icin, eklenecek degerin ismi ve degiskeni ```docker-compose.yml``` dosyanisa eklenmelidir.
+
+```
+moodle:
+  ...
+  environment:
+    - MOODLE_PASSWORD=my_password
+  ...
+  ```
+
+* Manual olarak eklenecek olursa, ```--env``` opsiyonu her bir degisken ve deger ile kullanilmalidir.
+
+```
+$ docker run -d --name moodle -p 80:8080 -p 443:8443 \
+ --env MOODLE_PASSWORD=my_password \
+ --network moodle-tier \
+ --volume /path/to/moodle-persistence:/bitnami \
+ bitnami/moodle:latest
+ ```
+
+ **Kullanilmasi uygun olan cevre degiskenleri:**
+
+ ***Kullanici ve site konfigurasyonu***
+
+ * ``` MOODLE_USERNAME```: Moodle uygulamasi kullanici adidir. Default: **user**
+ * ``` MOODLE_PASSWORD```: Moodle uygulamasi sifresidir. Default: **bitnami**
+ * ``` MOODLE_EMAIL```: Moodle uygulamasi emailidir. Default: user@example.com
+ * ``` MOODLE_SITE_NAME```: Moodle site ismidir. Default: **New Site**
+ * ``` MOODLE_SKIP_BOOTSTRAP```: Moodle veritabanini ayaklandirmak icin sifirlamamak gerekir. Veritabaninda daha onceden deklare edilmis Moodle verileri bulunabilir. Default: **no**
+ * ``` MOODLE_HOST```: Moodle'in wwwroot ozelligini konfigure etmesine izin verir. Orneklendirmek gerekirse; example.com. Default olarak PHP superglobal degiskenidir. Default: **$_SERVER['HTTP_HOST']**
+ * ``` MOODLE_REVERSEPROXY``` : Moodle'in reverseproxy ozelligini aktive etmesine izin verir. Default: **no**
+ * ``` MOODLE_SSLPROXY```: Moodle'in sslproxy ozelligini aktive etmesine izin verir. Default: **no**
+
+
+ ***Var olan veritabaninin kullanimi***
+
+ * ``` MOODLE_DATABASE_TYPE```: Veritabani turudur. Gecerli olan degerler; mariadb, mysqli, pgsql. Default: **mariadb**
+ * ``` MOODLE_DATABASE_HOST```: Veritabani server'i icin host adidir. Default: **mariadb**
+ * ``` MOODLE_DATABASE_PORT_NUMBER```: Veritabani server'i tarafindan kullanilan port'tur. Default: **3306**
+ * ``` MOODLE_DATABASE_NAME```: Moodle'in veritabanina baglanmak icin kullandigi veritabani ismidir. Default: **bitnami_moodle**
+ * ``` MOODLE_DATABASE_USER```: Moodle'in veritabanina baglanmak icin kullandigi kullanici ismidir. Default: **bn_moodle**
+ * ``` MOODLE_DATABASE_PASSWORD```: Moodle'in veritabanina baglanmak icin kullandigi sifredir. Default yok.
+ * ``` ALLOW_EMPTY_PASSWORD```: Bos sifre olarak kullanilmasina izin verir. Default: **no**
+
+
+       
