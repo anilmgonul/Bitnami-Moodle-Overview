@@ -239,4 +239,22 @@ $ docker run -d --name moodle -p 80:8080 -p 443:8443 \
  * ``` ALLOW_EMPTY_PASSWORD```: Bos sifre olarak kullanilmasina izin verir. Default: **no**
 
 
-       
+***mysql-client kullanarak Moodle veritabani olusturmak***
+
+* ``` MYSQL_CLIENT_FLAVOR```: SQL veritabani aromasi denebilir. Gecerli olan degerler; ```mariadb``` veya ```mysql```. Default: **mariadb**
+* ``` MYSQL_CLIENT_DATABASE_HOST```: MariaDB server'i icin host ismidir. Default: **mariadb**
+* ``` MYSQL_CLIENT_DATABASE_PORT_NUMBER```: MariaDB server'i tarafindan kullanilan port'tur. Default: **3306**
+* ``` MYSQL_CLIENT_DATABASE_ROOT_USER```: Veritabani admin kullanicisi. Default: **root**   
+* ``` MYSQL_CLIENT_DATABASE_ROOT_PASSWORD```: Veritabani admin kullanicisi icin veritabani sifresi. Default yok.
+* ``` MYSQL_CLIENT_CREATE_DATABASE_NAME```: Mysql client tarafindan olusturulan yeni veritabani. Default yok.
+* ``` MYSQL_CLIENT_CREATE_DATABASE_USER```: Mysql client tarafindan olusturulan yeni veritabani kullanicisi. Default yok.
+* ``` MYSQL_CLIENT_CREATE_DATABASE_PASSWORD```: ``` MYSQL_CLIENT_CREATE_DATABASE_USER``` icin veritabani sifresi. Default yok.
+* ``` MYSQL_CLIENT_CREATE_DATABASE_CHARACTER_SET```: Yeni veritabani icin olusturulan karakterler. Default yok.
+* ``` MYSQL_CLIENT_CREATE_DATABASE_COLLATE```: Yeni veritabani icin kullanilan veritabani karsilastirmasi ve harmanlanmasi. Default yok.
+* ``` MYSQL_CLIENT_CREATE_DATABASE_PRIVILEGES```: ```MYSQL_CLIENT_CREATE_DATABASE_USER``` tarafindan ```MYSQL_CLIENT_CREATE_DATABASE_NAME``` icerisinde spesifik olarak deklare edilen veritabani ayricaliklari.
+* ``` MYSQL_CLIENT_ENABLE_SSL_WRAPPER```: **mysql** tarafindan SSL baglantilarinin veritabanina mecbur edilmesi. API yerine CLI kullanan uygulamalar icin faydalidir. Default: **no**  
+* ``` MYSQL_CLIENT_ENABLE_SSL```: Veritabani icin SSL baglantilarinin mecbur edilmesi. Default: **no**
+* ``` MYSQL_CLIENT_SSL_CA_FILE```: Yeni veritabani icin SSL CA dosyasina giden dizin. Default yok.
+* ``` MYSQL_CLIENT_SSL_CERT_FILE```: Yeni veritabani icin SSL CA dosyasina giden dizin. Default yok.
+* ``` MYSQL_CLIENT_SSL_KEY_FILE```: Yeni veritabani icin SSL CA dosyasina giden dizin. Default yok.
+* ``` ALLOW_EMPTY_PASSWORD```: Bos sifre olarak kullanilmasina izin verir. Default: **no** 
