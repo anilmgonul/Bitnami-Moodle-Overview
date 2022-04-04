@@ -80,13 +80,13 @@ $ docker-compose up -d
 
 Uygulama ```docker-compose``` yerine manual olarak calistirilmak istenirse, asagida belirtilen adimlar takip edilmelidir:
 
-*** 1. Adim: Network olusturmak***
+***1. Adim: Network olusturmak***
 
 ```
 $ docker network create moodle-network
 ```
 
-*** 2. Adim: MariaDB surekliligi ve konteyneri icin volume olusturmak***
+***2. Adim: MariaDB surekliligi ve konteyneri icin volume olusturmak***
 
 ```
 $ docker volume create --name mariadb_data
@@ -101,7 +101,7 @@ $ docker run -d --name mariadb \
   bitnami/mariadb:latest
 ```
 
-*** 3. Adim: Moodle surekliligi ve konteyner erisimi icin volume olusturmak***
+***3. Adim: Moodle surekliligi ve konteyner erisimi icin volume olusturmak***
 
 ```
 $ docker volume create --name moodle_data
@@ -155,13 +155,13 @@ moodle:
 
 ### Docker Komutlari ile Host Dizinini Veri Disk Bolumu Olarak Deklare Etmek  
 
-**Step 1: Network olusturmak**
+**1. Adim: Network olusturmak**
 
 ```
 $ docker network create moodle-network
 ```
 
-**Step 2: MariaDB konteynerini host disk bolumu ile olusturmak**
+**2. Adim: MariaDB konteynerini host disk bolumu ile olusturmak**
 
 ```
 $ docker run -d --name mariadb \
@@ -174,7 +174,7 @@ $ docker run -d --name mariadb \
   bitnami/mariadb:latest
 ```
 
-**Step 3: Moodle konteynerini host disk bolumu ile olusturmak**
+**3. Adim: Moodle konteynerini host disk bolumu ile olusturmak**
 
 ```
 $ docker run -d --name moodle \
@@ -257,4 +257,18 @@ $ docker run -d --name moodle -p 80:8080 -p 443:8443 \
 * ``` MYSQL_CLIENT_SSL_CA_FILE```: Yeni veritabani icin SSL CA dosyasina giden dizin. Default yok.
 * ``` MYSQL_CLIENT_SSL_CERT_FILE```: Yeni veritabani icin SSL CA dosyasina giden dizin. Default yok.
 * ``` MYSQL_CLIENT_SSL_KEY_FILE```: Yeni veritabani icin SSL CA dosyasina giden dizin. Default yok.
-* ``` ALLOW_EMPTY_PASSWORD```: Bos sifre olarak kullanilmasina izin verir. Default: **no** 
+* ``` ALLOW_EMPTY_PASSWORD```: Bos sifre olarak kullanilmasina izin verir. Default: **no**
+
+
+***postgresql-client kullanarak Moodle veritabani olusturmak***
+
+* ``` POSTGRESQL_CLIENT_DATABASE_HOST```: PostgreSQL server'i icin host ismidir. Default: **postgresql**
+* ``` POSTGRESQL_CLIENT_DATABASE_PORT_NUMBER```: PostgreSQL server'i tarafindan kullanilan port'tur. Default: **5432**
+* ``` POSTGRESQL_CLIENT_POSTGRES_USER```: Veritabani admin kullanicisi. Default: **root**
+* ``` POSTGRESQL_CLIENT_POSTGRES_PASSWORD```: Veritabani admin kullanicisi icin veritabani sifresi. Default yok.
+* ``` POSTGRESQL_CLIENT_CREATE_DATABASE_NAMES```: Postgresql-client tarafindan olusturulan yeni veritabani listesi. Default yok.
+* ``` POSTGRESQL_CLIENT_CREATE_DATABASE_USER```: Postgresql-client tarafindan olusturulan yeni veritabani kullanicisi. Default yok.
+* ``` POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD```: ```POSTGRESQL_CLIENT_CREATE_DATABASE_USER``` kullanicisi icin veritabani sifresi. Default yok.
+* ``` POSTGRESQL_CLIENT_CREATE_DATABASE_EXTENSIONS```: Ilk baslatma sirasinda spesifik olarak belirtilen PostgreSQL uzantilari. Default yok.
+* ``` POSTGRESQL_CLIENT_EXECUTE_SQL```: SQL kodunu PostgreSQL serveri icinde calistirir. Default yok.
+* ``` ALLOW_EMPTY_PASSWORD```: Bos sifre olarak kullanilmasina izin verir. Default: **no**
