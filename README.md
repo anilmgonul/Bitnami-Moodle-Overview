@@ -272,3 +272,14 @@ $ docker run -d --name moodle -p 80:8080 -p 443:8443 \
 * ``` POSTGRESQL_CLIENT_CREATE_DATABASE_EXTENSIONS```: Ilk baslatma sirasinda spesifik olarak belirtilen PostgreSQL uzantilari. Default yok.
 * ``` POSTGRESQL_CLIENT_EXECUTE_SQL```: SQL kodunu PostgreSQL serveri icinde calistirir. Default yok.
 * ``` ALLOW_EMPTY_PASSWORD```: Bos sifre olarak kullanilmasina izin verir. Default: **no**
+
+
+***SMTP Konfigurasyonu***
+
+Asagidaki cevre degiskenleri ayarlanirsa SMTP kullanarak email gonderme Moodle Konfigurasyonu saglanir:
+
+* ``` MOODLE_SMTP_HOST```: SMTP host'u.
+* ``` MOODLE_SMTP_PORT```: SMTP port'u.
+* ``` MOODLE_SMTP_USER```: SMTP hesabi kullanicisi.
+* ``` MOODLE_SMTP_PASSWORD```: SMTP hesabi sifresi.
+* ``` MOODLE_SMTP_PROTOCOL```: SMTP protokolu.
