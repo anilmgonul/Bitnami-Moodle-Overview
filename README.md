@@ -445,3 +445,31 @@ $ docker-compose logs moodle
 ```
 
 Konteynerlarin log suruculerini de ``` --log-driver``` kullanarak konfigure edebiliriz. Aklimizda bulunmasi adina, default konfigurasyon icin Docker ```json-file``` surucusunu kullaniyor.
+
+
+#### Mevcut Arizalari Ortadan Kaldirma
+
+**Konteynerlarin Yedeklenmesi**
+
+Veri, konfigurasyon ve log'larin yedeklenmesi icin asagida adimlar takip edilmelidir:
+
+**1. Adim: Mevcut calisan konteynerin durdurulmasi**
+
+```
+$ docker stop moodle
+```
+
+Docker compose da kullanilabilir:
+
+```
+$ docker-compose stop moodle
+```
+
+**2. Adim: Back up, yedekleme komutunu kullanmak**
+
+Yedeklemenin olusturulmasi icin kullanacagimiz iki disk bolumu olusturmaliyiz; yedeklemenin depolanacagi yerin host'taki dizini ve veri erisimi olabilmesi icin durdurdugumuz konteynerdan gelen disk bolumu.
+
+```
+$ docker run --rm -v /path/to/moodle-backups:/backups --volumes-from moodle busybox \
+  cp -a /bitnami/moodle /backups/latest
+```
