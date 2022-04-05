@@ -430,7 +430,7 @@ Son olarak, default gelen imaj'imizi genisletebilir ve bir cok yerel tanimlayici
 OM bitnami/moodle
 RUN echo "es_ES.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen
 ```
-#### Log'lar, Sistem Gunlukleri
+### Log'lar, Sistem Gunlukleri
 
 Moodle icin Bitnami Docker imaj'i konteyner log'larini ```stdout``` ile gonderir. log'lari gormek icin;
 
@@ -447,7 +447,7 @@ $ docker-compose logs moodle
 Konteynerlarin log suruculerini de ``` --log-driver``` kullanarak konfigure edebiliriz. Aklimizda bulunmasi adina, default konfigurasyon icin Docker ```json-file``` surucusunu kullaniyor.
 
 
-#### Mevcut Arizalari Ortadan Kaldirma
+### Mevcut Arizalari Ortadan Kaldirma
 
 **Konteynerlarin Yedeklenmesi**
 
@@ -473,3 +473,56 @@ Yedeklemenin olusturulmasi icin kullanacagimiz iki disk bolumu olusturmaliyiz; y
 $ docker run --rm -v /path/to/moodle-backups:/backups --volumes-from moodle busybox \
   cp -a /bitnami/moodle /backups/latest
 ```
+
+### Geriyukleme
+
+MariaDB veritabani konteyneri icin:
+
+```
+$ docker run -d --name mariadb \
+  ...
+-  --volume /path/to/mariadb-persistence:/bitnami/mariadb \
++  --volume /path/to/mariadb-backups/latest:/bitnami/mariadb \
+  bitnami/mariadb:latest
+```
+
+Moodle konteyneri icin:
+
+```
+$ docker run -d --name moodle \
+  ...
+-  --volume /path/to/moodle-persistence:/bitnami/moodle \
++  --volume /path/to/moodle-backups/latest:/bitnami/moodle \
+  bitnami/moodle:latest
+```
+
+### Imaj'in Guncellenmesi
+
+**1. Adim:Guncel imaj'i getirmek**
+
+```
+$ docker pull bitnami/moodle:latest
+```
+
+**2. Adim:Calisan konteyneri durdurmak**
+
+```
+$ docker-compose stop moodle
+```
+
+**3. Adim: Uygulamanin bellek kopyasini almak**
+
+Burada, yedekleme kisminda bahsedilen adimlar takip edilecektir.
+
+**4. Adim: Mevcut calisan konyteyneri kaldirmak**
+
+```
+docker-compose rm -v moodle
+```
+
+**5. Adim: Yeni imaj'i ayaklandirmak**
+
+```
+$ docker-compose up -d
+```
+    
