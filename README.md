@@ -430,3 +430,18 @@ Son olarak, default gelen imaj'imizi genisletebilir ve bir cok yerel tanimlayici
 OM bitnami/moodle
 RUN echo "es_ES.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen
 ```
+#### Log'lar, Sistem Gunlukleri
+
+Moodle icin Bitnami Docker imaj'i konteyner log'larini ```stdout``` ile gonderir. log'lari gormek icin;
+
+```
+$ docker logs moodle
+```
+
+Docker compose da kullanilabilir;
+
+```
+$ docker-compose logs moodle
+```
+
+Konteynerlarin log suruculerini de ``` --log-driver``` kullanarak konfigure edebiliriz. Aklimizda bulunmasi adina, default konfigurasyon icin Docker ```json-file``` surucusunu kullaniyor.
