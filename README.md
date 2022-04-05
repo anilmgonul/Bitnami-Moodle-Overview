@@ -358,3 +358,75 @@ $ docker run -d --name moodle -p 80:8080 -p 443:8443 \
   --volume /path/to/moodle-persistence:/bitnami \
   bitnami/moodle:latest
 ```
+
+#### Dil Paketlerinin Eklenmesi
+
+Default olarak Moodle'da dil secenegi Ingilizce olarak gelmektedir. Bununla birlikte, daha fazla dil paketi opsiyonlari da sunmaktadir. Admin arayuzundedeki platform araciligi ile dil paketleri konfigure edilebilir. Yeni eklenecek olan dil paketininden tam verim almak icin, sistem guncellemesi akilli bir yontem olacaktir, bunu sistemin yerel dosyalarinda yapabiliriz. Bu dil paketi eklemesini yapmak icin bir kac opsiyonumuz var:
+
+**Default gelen imaj'in ```EXTRA_LOCALES``` "build-time" degiskeni ile olusturulmasi**
+
+Docker imajini olusturdugumuzda ```EXTRA_LOCALES``` build-time degiskeni kullanilarak eklenti yapabiliriz. Degerler yazilirken virgul ile veya noktali virgul ile ayristirilmali ve girisi girisi konteyner icinde ```/usr/share/i18n/SUPPORTED``` tanimlanmalidir.
+
+Ornek olarak, asagida Fransizca, Almanca, Italyanca, Ispanyolca ve Turkce dillerini tanimlayacagiz.
+
+```
+fr_FR.UTF-8 UTF-8, de_DE.UTF-8 UTF-8, it_IT.UTF-8 UTF-8, es_ES.UTF-8, tr_TR.UTF-8 UTF-8
+```
+
+**EXTRA_LOCALES** kullanmak icin iki opsiyomuz var:
+
+* ```docker-compose.yml``` dosyasi modifiye edilmeli:
+
+```
+moodle:
+...
+  # image: 'bitnami/moodle:3' # remove this line !
+  build:
+    context: .
+    dockerfile: Dockerfile
+    args:
+      - EXTRA_LOCALES=fr_FR.UTF-8 UTF-8, de_DE.UTF-8 UTF-8, it_IT.UTF-8 UTF-8, es_ES.UTF-8 UTF-8
+...
+```
+
+* Manuel calistirma icin, repository klonlanmali ve asagida belirtilen komut ```3/debian-10``` icine yazilmali:
+
+```
+$ docker build -t bitnami/moodle:latest --build-arg EXTRA_LOCALES="fr_FR.UTF-8 UTF-8, de_DE.UTF-8 UTF-8, it_IT.UTF-8 UTF-8, es_ES.UTF-8 UTF-8" .
+```
+
+**Yerel tanimlayicilara ```WITH_ALL_LOCALES``` ile olanak saglamak**
+
+Cevre degiskenini ```WITH_ALL_LOCALES=yes``` olarak duzenleyebiliriz. Biraz zaman alacaktir ancak desteklenen tum paketler yuklenecektir.
+
+Iki farkli opsiyon ile ```WITH_ALL_LOCALES=yes``` kullanabiliriz:
+
+* ```docker-compose.yml``` dosyasi modifiye edilmeli:
+
+```
+moodle:
+...
+  # image: 'bitnami/moodle:3' # remove this line !
+  build:
+    context: .
+    dockerfile: Dockerfile
+    args:
+      - WITH_ALL_LOCALES=yes
+...
+
+```
+
+* Manuel calistirma icin, repository klonlanmali ve asagida belirtilen komut ```3/debian-10``` icine yazilmali:
+
+```
+$ docker build -t bitnami/moodle:latest --build-arg WITH_ALL_LOCALES=yes .
+```
+
+**Default Imaj'i Genisletmek**
+
+Son olarak, default gelen imaj'imizi genisletebilir ve bir cok yerel tanimlayici ekleyebiliriz:
+
+```
+OM bitnami/moodle
+RUN echo "es_ES.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen
+```
